@@ -6,26 +6,15 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
-import styles from "./welcome.style";
+import styles from "./welcosme.style";
 
- 
-const Welcome = () => {
+
+const mainpage = () => {
   const router = useRouter();
 
   return (
       <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.containers}
-          onPress={() => {
-            router.push('/JobDetails/authpage');
-          }}>
-          <Text style={styles.Title} numberOfLines={1}>
-          Authentication
-          </Text>
-        </TouchableOpacity>
-
-
-        {/* <TouchableOpacity
+          <TouchableOpacity
           style={styles.containers}
           onPress={() => {
             router.push('/JobDetails/CustDetails');
@@ -61,10 +50,9 @@ const Welcome = () => {
           <Text style={styles.Title} numberOfLines={1}>
           Available
           </Text>
-        </TouchableOpacity> */}
-    
+        </TouchableOpacity>
       </View>
   );
 };
 
-export default Welcome;
+export default mainpage;

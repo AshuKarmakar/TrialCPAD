@@ -126,4 +126,43 @@ const StocksCards = () => {
   return { data, isLoading, error, refetch };
 };
 
-export default { useFetch, billFetch, StocksCards };
+const login = (email, password) => {
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+ 
+  
+  const fetchData = async () => {
+    setIsLoading(true);
+    var data = {
+      email : email,
+      password: password
+    }
+    try {
+      const response = await axios.post('http://localhost:8000/signin', data);
+      setData(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log(error)
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const refetch = () => {
+    setIsLoading(true);
+    fetchData();
+    console.log("refetch");
+  };
+
+  return { data, isLoading, error, refetch };
+};
+
+
+
+export default { useFetch, billFetch, StocksCards, login };

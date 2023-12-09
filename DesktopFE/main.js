@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path                            = require('path');
 var rate = 5600;
 const fs                              = require("fs");
@@ -108,12 +108,12 @@ var signin = async (request, email, password) => {
         if(response.status == 200)
             handleAuthentication();
         else{
-            alert("helloy");
+            dialog.showErrorBox("Error", 'Authentication Failed!');
         }
     }) 
     .catch((err) => {
         console.log(err);
-        alert("helloy");
+        dialog.showErrorBox("Error", 'Authentication Failed!');
 
     })
 }
