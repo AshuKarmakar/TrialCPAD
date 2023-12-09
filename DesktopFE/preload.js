@@ -6,6 +6,9 @@ contextBridge.exposeInMainWorld("bridge", {
     sendGoldRate: (data) => ipcRenderer.invoke("sendGoldRate", data),
     getCustDetails: () => ipcRenderer.invoke("getCustDetails"), 
     getBills: () => ipcRenderer.invoke("getBills"),
+    signin: (email, password) => ipcRenderer.invoke("signin", email, password),
+    signup: (email, password) => ipcRenderer.invoke("signup", email, password),
+
 });
 
 

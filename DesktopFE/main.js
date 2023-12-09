@@ -2,10 +2,16 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path                            = require('path');
 var rate = 5600;
 const fs                              = require("fs");
+const signIn = require("./config/signin");
+const signUp = require("./config/signup");
+const apiUrl = "http://localhost:8000/";
 
-const apiUrl = "http://localhost:8000/"
 
-function createWindow() {
+let authWindow = null;
+
+let win  = null;
+
+function createMainWindow() {
     win = new BrowserWindow({
         width: 1800,
         height: 900,
@@ -22,16 +28,114 @@ function createWindow() {
     ipcMain.handle('sendGoldRate', sendGoldRate);
     ipcMain.handle('getCustDetails', getCustDetails);
     ipcMain.handle('getBills', getBills);
+    // ipcMain.handle('signin', signin);
+    // ipcMain.handle('signup', signup);
+
 
     win.loadFile('src/mainpage.html');  
 }
 
-app.whenReady().then(createWindow);
+
+function createAuthWindow() {
+    authWindow = new BrowserWindow({ 
+        width: 1800,
+        height: 900,
+        // frame: false,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+            contextIsolation: true,
+            enableRemoteModule: true,
+        }
+     });
+     ipcMain.handle('signin', signin);
+    ipcMain.handle('signup', signup);
+
+
+    authWindow.loadFile('src/LoginLogout.html');
+  
+    authWindow.on('closed', function () {
+      authWindow = null;
+    });
+  }
+
+  function openNewWindow() {
+    // Perform your authentication logic here
+    // For demonstration purposes, let's assume authentication is successful
+    const isAuthenticated = true;
+  
+    if (isAuthenticated) {
+      if (authWindow) {
+        authWindow.close();
+      }
+  
+      createMainWindow();
+    }
+  }
+
+  function handleAuthentication() {
+    openNewWindow();
+  }
+
+  app.on('activate', function () {
+    if (win === null) {
+      createMainWindow();
+    }
+  });
+  
+
+
+app.whenReady().then(createAuthWindow);
 
 app.on('window-all-closed', () => {
     if(process.platform !== 'darwin') app.quit();
 })
 
+var signin = async (request, email, password) => {
+    var data = {
+        email: email,
+        password: password
+    };
+    fetch(apiUrl + 'signin', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then((response) => {
+        console.log(response.status);
+        if(response.status == 200)
+            handleAuthentication();
+        else{
+            alert("helloy");
+        }
+    }) 
+    .catch((err) => {
+        console.log(err);
+        alert("helloy");
+
+    })
+}
+var signup = async (request, email, password) => {
+    var data = {
+        email: email,
+        password: password
+    };
+    fetch(apiUrl + 'signup', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then((response) => {
+        console.log(response.status);
+    }) 
+    .catch((err) => {
+        console.log(err);
+    })
+}
 
 
 
